@@ -10,15 +10,15 @@ body, html { height: 100%; overflow: hidden; background-color: #1a1a1a; }
 }
 
 .month-section {
-    height: 100vh; /* บังคับ 100vh สำหรับ Scroll Snap */
+    height: 100vh; 
     scroll-snap-align: start; display: flex; flex-direction: column;
     align-items: center; padding: 2vh 20px; background-color: #f8f9fa;
-    overflow: hidden; /* ป้องกันเนื้อหาทะลุไปเดือนอื่น */
+    overflow: hidden; 
 }
 
 /* ส่วนหัวปฏิทิน */
 .month-header { 
-    display: flex; justify-content: flex-start; align-items: center; /* แก้ไขไม่ให้ 2026 โดนบีบ */
+    display: flex; justify-content: flex-start; align-items: center; 
     margin-bottom: 1.5vh; width: 100%; max-width: 1300px; flex-shrink: 0;
     border-bottom: 2px solid #ccc; padding-bottom: 10px;
 }
@@ -34,8 +34,8 @@ body, html { height: 100%; overflow: hidden; background-color: #1a1a1a; }
 .calendar-main { 
     flex: 3; display: grid; 
     grid-template-columns: repeat(7, 1fr); 
-    grid-template-rows: max-content; /* แถวหัววัน SUN-SAT ให้พอดีตัวหนังสือ */
-    grid-auto-rows: minmax(0, 1fr); /* แถววันที่ ให้หารความสูงกันเองพอดีเป๊ะ ไม่ทะลุจอ */
+    grid-template-rows: max-content; 
+    grid-auto-rows: minmax(0, 1fr); 
     gap: 8px; height: 100%; min-height: 0; 
 }
 .day-name { font-weight: 900; text-align: center; color: #333; padding-bottom: 5px; font-size: 1rem; text-transform: uppercase; }
@@ -44,7 +44,7 @@ body, html { height: 100%; overflow: hidden; background-color: #1a1a1a; }
 .day-cell {
     border-radius: 10px; background: #ffffff; padding: 6px; display: flex; flex-direction: column;
     box-shadow: 0 2px 5px rgba(0,0,0,0.04); cursor: pointer; transition: transform 0.1s;
-    overflow: hidden; /* บังคับซ่อนข้อความที่ล้น ให้ไปดูใน Popup แทน */
+    overflow: hidden; 
     min-height: 0; 
 }
 .day-cell:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 10; border: 1px solid #ddd; }
@@ -100,25 +100,59 @@ body, html { height: 100%; overflow: hidden; background-color: #1a1a1a; }
     .month-section { height: auto; min-height: 100vh; overflow: visible; padding-bottom: 40px; }
     .layout-grid { flex-direction: column; }
     
-    /* ล็อคความสูงปฏิทินให้พอดี ไม่ยืดตาม Sidebar */
     .calendar-main { height: 60vh; min-height: 500px; }
     
-    /* จัด Sidebar ให้อยู่แนวนอนใต้ปฏิทินบน iPad */
     .sidebar { flex-direction: row; flex-wrap: wrap; overflow: visible; padding-right: 0; }
     .sidebar-box { flex: 1; min-width: 250px; }
     .sidebar-note-container { width: 100%; }
 }
 
 /* =========================================================
-   📱 โหมดมือถือ (Mobile Responsive)
+   📱 โหมดมือถือ (Mobile Responsive - ตาราง 7 วัน)
 ========================================================= */
-@media screen and (max-width: 650px) {
-    /* เปลี่ยนจากตารางเป็น List แนวตั้ง (เหมือนที่ทำแล้วชอบ) */
-    .calendar-main { display: flex; flex-direction: column; height: auto; min-height: auto; gap: 6px; }
-    .day-name { font-size: 0.75rem; padding-bottom: 5px; }
-    .day-cell { height: 85px; min-height: unset; padding: 4px; border-radius: 8px; }
-    .event { font-size: 0.55rem; padding: 2px 4px; border-left: 2px solid; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
-    .month-header-left h1 { font-size: 2rem; }
-    .month-header-left .year-badge { font-size: 1rem; padding: 3px 10px; }
-    .sidebar { flex-direction: column; }
+@media screen and (max-width: 768px) {
+    .calendar-container { scroll-snap-type: none; overflow-x: hidden; }
+    /* เลิกบังคับความสูงหน้า ปล่อยให้เลื่อนลงไปดู Sidebar ด้านล่างได้ */
+    .month-section { height: auto; min-height: 100vh; overflow: visible; padding: 15px 5px; border-bottom: 8px solid #eee; }
+    
+    .layout-grid { flex-direction: column; min-width: 100%; gap: 10px; }
+    
+    /* คงตารางไว้ 7 วัน (Grid) แต่ย่อขนาดช่องไฟ */
+    .calendar-main { 
+        display: grid; 
+        grid-template-columns: repeat(7, 1fr); 
+        gap: 3px; /* ลดระยะห่างระหว่างช่อง */
+        height: auto; 
+        min-height: unset; 
+    }
+    
+    .day-name { font-size: 0.65rem; padding-bottom: 3px; }
+    
+    /* บังคับให้ช่องเป็นสี่เหลี่ยมเล็กๆ พอดีจอมือถือ */
+    .day-cell { 
+        height: 70px; /* ล็อคความสูงช่อง */
+        min-height: unset; 
+        padding: 2px; 
+        border-radius: 6px; 
+        overflow: hidden; /* งานล้นช่องให้ซ่อนไว้ เพื่อไปดูใน Popup */
+    }
+    
+    .date-num { font-size: 0.8rem; margin-bottom: 1px; text-align: center; }
+    
+    /* ย่อข้อความกิจกรรมให้จิ๋วลง ตัดคำด้วย ... */
+    .event { 
+        font-size: 0.5rem; 
+        padding: 1px 2px; 
+        border-left: 2px solid; 
+        white-space: nowrap; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        margin-bottom: 1px; 
+    }
+    
+    .month-header-left h1 { font-size: 1.8rem; }
+    .month-header-left .year-badge { font-size: 0.9rem; padding: 2px 8px; }
+    
+    .sidebar { flex-direction: column; padding-bottom: 20px; gap: 10px; }
+    .sidebar-box { padding: 12px; }
 }
